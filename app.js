@@ -1,0 +1,1 @@
+console.log("Web Semester Project INITIATED!!!");

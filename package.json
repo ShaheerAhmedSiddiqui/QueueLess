@@ -1,0 +1,22 @@
+{
+  "name": "queueless",
+  "version": "1.0.0",
+  "description": "**QueueLess** is a web-based Virtual Queue Management System designed for university services. It allows students to join queues online, receive a token, track their queue position, and estimate their waiting time without standing in long physical lines.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^18.0.9",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.24.6"
+  }
+}
