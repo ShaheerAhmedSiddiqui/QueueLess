@@ -1,4 +1,4 @@
-# QueueLess — Complete System Architecture and AI Implementation Blueprint
+# QueueLess — Complete System Architecture
 
 **Project:** QueueLess — Virtual Queue Management System
 **Project type:** University semester project
