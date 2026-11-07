@@ -1,0 +1,156 @@
+<% layout('layouts/main') -%>
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> A smarter campus experience</div>
+          <h1 class="hero-title">Less waiting.<br><span>Better service.</span></h1>
+          <p class="hero-copy">Skip the physical line. Join university service queues online, follow your token, and
+            know when it is your turn.</p>
+          <div class="d-flex flex-wrap gap-3 mt-4"><a class="btn btn-mint btn-lg" href="/register">Get started <i
+                class="bi bi-arrow-up-right ms-2"></i></a><a class="btn btn-outline-dark btn-lg"
+              href="#services">Explore services <i class="bi bi-arrow-down-right ms-2"></i></a></div>
+          <div class="hero-proof mt-4"><span><i class="bi bi-check-circle-fill"></i> Simple to use</span><span><i
+                class="bi bi-check-circle-fill"></i> Less time in line</span></div>
+        </div>
+        <div class="col-lg-6">
+          <div class="preview-wrap">
+            <div class="preview-glow"></div>
+            <div class="queue-preview-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <div><span class="preview-label">YOUR QUEUE PREVIEW</span>
+                  <h2 class="preview-service mt-1">Examination Office</h2>
+                </div><span class="status-pill status-waiting"><span></span> Waiting</span>
+              </div>
+              <div class="token-panel mt-4">
+                <div><span class="preview-label">YOUR TOKEN</span>
+                  <div class="token-number">EX-042</div>
+                </div>
+                <div class="token-qr"><i class="bi bi-ticket-perforated"></i></div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-6">
+                  <div class="preview-stat"><span>Position</span><strong>#03</strong><small>in the queue</small></div>
+                </div>
+                <div class="col-6">
+                  <div class="preview-stat"><span>Estimated wait</span><strong>10 min</strong><small>sample
+                      preview</small></div>
+                </div>
+              </div>
+              <div class="queue-progress mt-4">
+                <div class="d-flex justify-content-between"><span>Queue progress</span><span>2 people ahead</span></div>
+                <div class="progress mt-2">
+                  <div class="progress-bar" style="width: 42%"></div>
+                </div>
+              </div>
+              <div class="preview-note mt-3"><i class="bi bi-info-circle me-2"></i>Illustrative sample data — not a live
+                queue.</div>
+            </div>
+            <div class="floating-note"><span class="floating-icon"><i class="bi bi-bell"></i></span><span><strong>Your
+                  turn, without the wait.</strong><small>Know when to head to the counter.</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section-block" id="services">
+    <div class="container">
+      <div class="section-heading text-center"><span class="section-kicker">CAMPUS SERVICES</span>
+        <h2>One place for the services<br>you need.</h2>
+        <p>Access common university departments without waiting in a physical line.</p>
+      </div>
+      <%
+        const services = [
+        {
+            icon: 'bi-people',
+            name: 'Student Affairs',
+            desc: 'Get help with student matters and campus requests.'
+        },
+        {
+            icon: 'bi-wallet2',
+            name: 'Fee Office',
+            desc: 'Visit the fee department for payment-related assistance.'
+        },
+        {
+            icon: 'bi-mortarboard',
+            name: 'Admissions Office',
+            desc: 'Get guidance on admission and enrollment processes.'
+        },
+        {
+            icon: 'bi-journal-check',
+            name: 'Examination Office',
+            desc: 'Handle examination forms, results, and related queries.'
+        },
+        {
+            icon: 'bi-pc-display',
+            name: 'IT Support',
+            desc: 'Get assistance with university systems and technology.'
+        },
+        {
+            icon: 'bi-file-earmark-check',
+            name: 'Document Verification',
+            desc: 'Request verification of academic documents.'
+        }
+    ];
+    %>
+
+    <div class="row g-3 mt-4">
+        <% services.forEach((service) => { %>
+            <div class="col-md-6 col-lg-4">
+                <article class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="bi <%= service.icon %>"></i>
+                    </div>
+
+                    <h3><%= service.name %></h3>
+                    <p><%= service.desc %></p>
+
+                    <a href="/register" class="service-link">
+                        Access service
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </article>
+            </div>
+        <% }); %>
+    </div>
+    </div>
+  </section>
+  <section class="how-section">
+    <div class="container">
+      <div class="section-heading"><span class="section-kicker">HOW IT WORKS</span>
+        <h2>Three steps. A better visit.</h2>
+        <p>QueueLess keeps the process clear from joining a queue to reaching the counter.</p>
+      </div>
+      <div class="row g-4 mt-3">
+        <div class="col-md-4">
+          <div class="step-card"><span class="step-number">01</span>
+            <h3>Choose a service</h3>
+            <p>Find the university department you need and check its queue information.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card"><span class="step-number">02</span>
+            <h3>Get your token</h3>
+            <p>Join the queue online and keep track of your position and estimated wait.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card"><span class="step-number">03</span>
+            <h3>Visit when called</h3>
+            <p>Follow your token status and head to the assigned counter when it is your turn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-panel">
+        <div><span class="section-kicker">READY WHEN YOU ARE</span>
+          <h2>Make your next campus visit simpler.</h2>
+          <p>Create an account to explore the QueueLess experience.</p>
+        </div><a href="/register" class="btn btn-dark btn-lg">Create your account <i
+            class="bi bi-arrow-up-right ms-2"></i></a>
+      </div>
+    </div>
+  </section>

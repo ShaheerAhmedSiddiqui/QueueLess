@@ -1,0 +1,53 @@
+<% layout('layouts/main') -%>
+    <section class="page-hero">
+        <div class="container"><span class="section-kicker">CONTACT</span>
+            <h1>We'd like to<br><span>hear from you.</span></h1>
+            <p>Have a question or feedback about the QueueLess project? Send us a message.</p>
+        </div>
+    </section>
+    <section class="section-block">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-5">
+                    <h2 class="content-title">Get in touch</h2>
+                    <p class="body-copy">Use the form to share a question, suggestion, or issue. This form is currently
+                        a frontend prototype and is not connected to a message service.</p>
+                    <div class="contact-detail"><i class="bi bi-envelope"></i>
+                        <div><strong>Email</strong><span>Contact details to be configured</span></div>
+                    </div>
+                    <div class="contact-detail"><i class="bi bi-geo-alt"></i>
+                        <div><strong>Location</strong><span>University campus</span></div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <form class="form-card needs-validation" novalidate data-demo-form>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label" for="contactName">Your name</label><input
+                                    class="form-control" id="contactName" name="name" required>
+                                <div class="invalid-feedback">Please enter your name.</div>
+                            </div>
+                            <div class="col-md-6"><label class="form-label" for="contactEmail">Email
+                                    address</label><input class="form-control" type="email" id="contactEmail"
+                                    name="email" required>
+                                <div class="invalid-feedback">Enter a valid email address.</div>
+                            </div>
+                            <div class="col-12"><label class="form-label" for="contactSubject">Subject</label><input
+                                    class="form-control" id="contactSubject" name="subject" required>
+                                <div class="invalid-feedback">Please enter a subject.</div>
+                            </div>
+                            <div class="col-12"><label class="form-label" for="contactMessage">Message</label><textarea
+                                    class="form-control" id="contactMessage" name="message" rows="5"
+                                    required></textarea>
+                                <div class="invalid-feedback">Please write a message.</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-feedback" data-form-feedback role="status"></div><button
+                                    class="btn btn-mint" type="submit">Send message <i
+                                        class="bi bi-arrow-up-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
