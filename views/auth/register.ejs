@@ -1,0 +1,40 @@
+<% layout('layouts/auth') -%>
+    <div class="auth-shell"><a class="navbar-brand brand-lockup" href="/"><span
+                class="brand-mark">Q</span><span>Queue<span class="brand-accent">Less</span></span></a>
+        <div class="auth-card">
+            <div class="auth-heading"><span class="section-kicker">GET STARTED</span>
+                <h1>Create your account</h1>
+                <p>Register to access university services online.</p>
+            </div>
+            <form class="needs-validation" novalidate data-demo-form>
+                <div class="mb-3"><label class="form-label" for="fullName">Full name</label><input class="form-control"
+                        id="fullName" required placeholder="Your full name">
+                    <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+                <div class="mb-3"><label class="form-label" for="regEmail">University email</label><input
+                        class="form-control" id="regEmail" type="email" required placeholder="name@university.edu">
+                    <div class="invalid-feedback">Enter a valid email address.</div>
+                </div>
+                <div class="mb-3"><label class="form-label" for="studentId">Student ID</label><input
+                        class="form-control" id="studentId" required placeholder="Your university ID">
+                    <div class="invalid-feedback">Please enter your student ID.</div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label" for="regPassword">Password</label><input
+                            class="form-control" id="regPassword" type="password" minlength="8" required></div>
+                    <div class="col-md-6"><label class="form-label" for="confirmPassword">Confirm password</label><input
+                            class="form-control" id="confirmPassword" type="password" minlength="8" required></div>
+                </div>
+                <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="terms" required><label
+                        class="form-check-label" for="terms">I agree to the terms of use.</label>
+                    <div class="invalid-feedback">Please accept before continuing.</div>
+                </div>
+                <div class="form-feedback" data-form-feedback role="status"></div><button
+                    class="btn btn-mint w-100 mt-3" type="submit">Create account <i
+                        class="bi bi-arrow-right ms-1"></i></button>
+            </form>
+            <p class="auth-switch">Already registered? <a href="/login">Sign in</a></p>
+            <p class="prototype-note">Public registration is for student accounts only. Staff and administrator accounts
+                are provisioned separately.</p>
+        </div><a class="back-home" href="/"><i class="bi bi-arrow-left"></i> Back to homepage</a>
+    </div>
