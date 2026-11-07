@@ -4,7 +4,11 @@ const home = (req, res) => {
 const about = (req, res) => {
     return res.render('about', {title: 'About QueueLess'})
 }
+const contact = (req, res) => {
+    return res.render('contact', {title: 'About QueueLess'})
+}
 export {
     home,
-    about
+    about,
+    contact
 }
