@@ -11,20 +11,26 @@
     "dev": "nodemon app.js",
     "check": "node --check app.js"
   },
-  "keywords": ["queueless", "express", "ejs", "mysql", "virtual-queue"],
+  "keywords": [
+    "queueless",
+    "express",
+    "ejs",
+    "mysql",
+    "virtual-queue"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-   "bcrypt": "^5.1.1",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "helmet": "^8.0.0",
+    "helmet": "^8.3.0",
     "mysql2": "^3.24.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
-  } 
+  }
 }
