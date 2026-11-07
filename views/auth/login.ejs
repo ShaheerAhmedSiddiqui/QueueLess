@@ -1,0 +1,31 @@
+<% layout('layouts/auth') -%>
+    <div class="auth-shell"><a class="navbar-brand brand-lockup" href="/"><span
+                class="brand-mark">Q</span><span>Queue<span class="brand-accent">Less</span></span></a>
+        <div class="auth-card">
+            <div class="auth-heading"><span class="section-kicker">WELCOME BACK</span>
+                <h1>Sign in to QueueLess</h1>
+                <p>Access your university services and queue activity.</p>
+            </div><%- include('../partials/flash-messages') %>
+                <form class="needs-validation" novalidate data-demo-form>
+                    <div class="mb-3"><label class="form-label" for="email">University email</label>
+                    <input class="form-control" id="email" type="email" placeholder="name@university.edu" required>
+                        <div class="invalid-feedback">Enter a valid email address.</div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between"><label class="form-label"
+                                for="password">Password</label><a class="small-link" href="/forgot-password">Forgot
+                                password?</a></div>
+                        <div class="password-wrap"><input class="form-control" id="password" type="password"
+                                placeholder="Enter your password" required minlength="8"><button class="password-toggle"
+                                type="button" data-password-toggle="password" aria-label="Show password"><i
+                                    class="bi bi-eye"></i></button></div>
+                        <div class="invalid-feedback">Password must be at least 8 characters.</div>
+                    </div>
+                    <div class="form-feedback" data-form-feedback role="status"></div><button
+                        class="btn btn-mint w-100 mt-3" type="submit">Sign in <i
+                            class="bi bi-arrow-right ms-1"></i></button>
+                </form>
+                <p class="auth-switch">New to QueueLess? <a href="/register">Create an account</a></p>
+                <p class="prototype-note">Authentication will be connected to the backend in a later phase.</p>
+        </div><a class="back-home" href="/"><i class="bi bi-arrow-left"></i> Back to homepage</a>
+    </div>
