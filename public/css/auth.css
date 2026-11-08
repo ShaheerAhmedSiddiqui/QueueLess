@@ -1,0 +1,99 @@
+.auth-page {
+    min-height: 100vh;
+    background: radial-gradient(circle at 15% 10%, rgba(143, 227, 207, .25), transparent 28%), linear-gradient(135deg, #f5f8f6, #eef3f0);
+}
+
+.auth-shell {
+    width: min(100% - 32px, 480px);
+    margin: 0 auto;
+    padding: 35px 0 28px;
+}
+
+.auth-shell>.brand-lockup {
+    margin: 0 0 26px 5px;
+}
+
+.auth-card {
+    padding: 34px;
+    border: 1px solid #e1e9e5;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 22px 65px rgba(34, 40, 49, .09);
+}
+
+.auth-heading {
+    margin-bottom: 25px;
+}
+
+.auth-heading h1 {
+    margin: 10px 0 7px;
+    color: var(--ql-ink);
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.auth-heading p {
+    margin: 0;
+    color: var(--ql-muted);
+    font-size: .9rem;
+}
+
+.auth-switch {
+    margin: 22px 0 0;
+    color: var(--ql-muted);
+    text-align: center;
+    font-size: .88rem;
+}
+
+.auth-switch a,
+.small-link {
+    color: #398a75;
+    font-weight: 700;
+}
+
+.small-link {
+    font-size: .78rem;
+}
+
+.prototype-note {
+    margin: 18px 0 0;
+    color: #929b96;
+    text-align: center;
+    font-size: .72rem;
+}
+
+.back-home {
+    display: block;
+    margin-top: 22px;
+    color: #6f7c76;
+    text-align: center;
+    font-size: .85rem;
+}
+
+.password-wrap {
+    position: relative;
+}
+
+.password-wrap .form-control {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #738079;
+}
+
+@media(max-width:575px) {
+    .auth-shell {
+        padding-top: 22px;
+    }
+
+    .auth-card {
+        padding: 24px 20px;
+    }
+}
