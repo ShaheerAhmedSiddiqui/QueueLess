@@ -20,7 +20,7 @@ const resetPassword = (req, res) => {
     return res.render('auth/reset-password', {title: 'reset password'})
 }
 
-export {
+module.exports  = {
     home,
     about,
     contact,

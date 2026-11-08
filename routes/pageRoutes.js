@@ -10,4 +10,4 @@ router.get("/register", register);
 router.get("/forgot-password", forgotPassword);
 router.get("/reset-password", resetPassword);
 
-export default router;
+module.exports = router;
