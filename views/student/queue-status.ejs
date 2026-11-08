@@ -1,0 +1,86 @@
+<% layout('layouts/student') -%>
+    <div class="page-intro d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+            <p class="page-kicker">LIVE QUEUE TRACKER</p>
+            <h1>Your queue status</h1>
+            <p class="page-subtitle">Keep an eye on your place in line while you wait.</p>
+        </div><span class="update-indicator"><span></span> Sample preview</span>
+    </div>
+    <div class="queue-status-layout">
+        <section class="queue-focus-card">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                <div><span class="muted-label">EXAMINATION OFFICE</span>
+                    <h2>Examination Office</h2>
+                    <p><i class="bi bi-geo-alt me-1"></i>Main campus · Counter 02</p>
+                </div><span class="status-badge status-waiting"><span></span> Waiting</span>
+            </div>
+            <div class="queue-token-focus"><span class="muted-label">YOUR TOKEN NUMBER</span>
+                <div class="queue-token-number">EX-042</div><span class="token-caption">Keep this number handy when your
+                    turn is near.</span>
+            </div>
+            <div class="queue-position-grid">
+                <div class="position-stat position-primary"><span>Your position</span><strong>03
+                        <small>rd</small></strong><small>in the queue</small></div>
+                <div class="position-stat"><span>People ahead</span><strong>02</strong><small>before your turn</small>
+                </div>
+                <div class="position-stat"><span>Estimated wait</span><strong>10
+                        <small>min</small></strong><small>approximate</small></div>
+            </div>
+            <div class="queue-current-serving">
+                <div><span class="muted-label">CURRENTLY SERVING</span><strong>EX-039</strong></div>
+                <div class="serving-note"><i class="bi bi-person-check"></i><span>Two tokens ahead of you</span></div>
+            </div>
+            <div class="queue-progress-block">
+                <div class="d-flex justify-content-between"><strong>Queue progress</strong><span>42%</span></div>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width:42%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-2"><small>Joined 10:24 AM</small><small>Last refreshed:
+                        just now (sample)</small></div>
+            </div>
+            <div class="queue-actions"><button class="btn btn-outline-danger" id="cancelQueueButton"><i
+                        class="bi bi-x-circle me-2"></i>Cancel queue</button><button class="btn btn-dark-soft"
+                    id="refreshQueueButton"><i class="bi bi-arrow-clockwise me-2"></i>Refresh preview</button></div>
+            <p class="sample-caption mb-0"><i class="bi bi-info-circle me-1"></i>Sample values only. This page is not
+                connected to a real-time queue API.</p>
+        </section>
+        <aside class="queue-side-column">
+            <section class="content-card next-step-card"><span class="section-kicker">WHAT HAPPENS NEXT</span>
+                <h3>Stay nearby</h3>
+                <p>When your token is called, proceed to the assigned counter. Please keep an eye on the display.</p>
+                <div class="next-step-list">
+                    <div class="next-step-item is-done"><span><i class="bi bi-check-lg"></i></span>
+                        <div><strong>Queue joined</strong><small>Your token has been assigned.</small></div>
+                    </div>
+                    <div class="next-step-item is-current"><span>2</span>
+                        <div><strong>Wait for your turn</strong><small>Watch for your token to be called.</small></div>
+                    </div>
+                    <div class="next-step-item"><span>3</span>
+                        <div><strong>Visit the counter</strong><small>Meet the staff member when called.</small></div>
+                    </div>
+                </div>
+            </section>
+            <section class="help-card">
+                <div class="help-card-icon"><i class="bi bi-question-circle"></i></div>
+                <h3>Need help?</h3>
+                <p>If you have a question about your visit, contact the university service desk.</p><a href="/contact"
+                    class="text-link">Contact support <i class="bi bi-arrow-up-right"></i></a>
+            </section>
+        </aside>
+    </div>
+    <div class="modal fade" id="cancelQueueModal" tabindex="-1" aria-labelledby="cancelQueueTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ql-modal">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="cancelQueueTitle">Cancel your queue?</h2><button class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Are you sure you want to cancel token <strong>EX-042</strong>? This preview cannot
+                        perform a real cancellation.</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-quiet" data-bs-dismiss="modal">Keep my
+                        place</button><button class="btn btn-danger" disabled>Confirm cancellation</button></div>
+            </div>
+        </div>
+    </div>

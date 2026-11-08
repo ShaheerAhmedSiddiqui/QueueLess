@@ -6,6 +6,7 @@ const session = require('express-session');
 const helmet = require('helmet');
 const ejsMate = require('ejs-mate');
 const pageRoutes = require("./routes/pageRoutes");
+const studentRoutes = require("./routes/studentRoutes")
 const viewLocals = require('./config/viewLocals');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
@@ -45,6 +46,7 @@ app.use(session({
 }));
 app.use(viewLocals);
 app.use('/', pageRoutes);
+app.use('/student', studentRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok', app: 'QueueLess' }));
 app.use(notFound);

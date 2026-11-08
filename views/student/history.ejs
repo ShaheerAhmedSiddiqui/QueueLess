@@ -1,0 +1,87 @@
+<% layout('layouts/student') -%>
+    <div class="page-intro">
+        <p class="page-kicker">YOUR RECORDS</p>
+        <h1>Queue history</h1>
+        <p class="page-subtitle">A record of the university services you've visited through QueueLess.</p>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="mini-summary-card"><span>Total visits</span><strong>08</strong><small>All recorded
+                    requests</small></div>
+        </div>
+        <div class="col-sm-4">
+            <div class="mini-summary-card"><span>Completed</span><strong>07</strong><small>Successfully served</small>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="mini-summary-card"><span>Cancelled</span><strong>01</strong><small>Cancelled requests</small>
+            </div>
+        </div>
+    </div>
+    <div class="content-card">
+        <div class="card-heading flex-wrap">
+            <div><span class="section-kicker">PAST ACTIVITY</span>
+                <h2>Service visits</h2>
+            </div>
+            <div class="history-filters">
+                <div class="search-field compact-search"><i class="bi bi-search"></i><input id="historySearch"
+                        type="search" class="form-control" placeholder="Search history..." aria-label="Search history">
+                </div><select id="historyStatus" class="form-select" aria-label="Filter by status">
+                    <option value="all">All statuses</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table ql-table align-middle" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Service</th>
+                        <th>Date & time</th>
+                        <th>Final status</th>
+                        <th class="text-end">Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% history.forEach(item=> { %><tr data-status="<%= item.status %>"
+                            data-search="<%= `${item.token} ${item.service} ${item.date}`.toLowerCase() %>">
+                            <td><strong class="table-token">
+                                    <%= item.token %>
+                                </strong></td>
+                            <td>
+                                <%= item.service %>
+                            </td>
+                            <td>
+                                <%= item.date %><small class="d-block text-muted">
+                                        <%= item.time %>
+                                    </small>
+                            </td>
+                            <td><span
+                                    class="status-badge <%= item.status === 'Completed' ? 'status-completed' : 'status-cancelled' %>">
+                                    <%= item.status %>
+                                </span></td>
+                            <td class="text-end">
+                                <%= item.duration %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state d-none" id="historyEmpty">
+            <div class="empty-state-icon"><i class="bi bi-calendar2-x"></i></div>
+            <h3>No history found</h3>
+            <p>There are no records matching these filters.</p>
+        </div>
+        <div class="table-footer"><span>Showing 4 sample records</span>
+            <nav aria-label="History pagination">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
