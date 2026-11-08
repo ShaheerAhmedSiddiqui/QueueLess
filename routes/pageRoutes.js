@@ -8,4 +8,4 @@ router.get("/contact", contact);
 router.get("/login", login);
 router.get("/register", login);
 
-export default router;
+module.exports = router;

@@ -13,10 +13,10 @@ const login = (req, res) => {
 const register = (req, res) => {
     return res.render('auth/register', {title: 'Login QueueLess'})
 }
-export {
-    home,
-    about,
-    contact,
-    login,
-    register
-}
+module.exports = {
+       home,
+       about,
+       contact,
+       login,
+       register
+   };

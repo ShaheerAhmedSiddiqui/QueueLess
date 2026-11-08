@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:sans-serif;max-width:420px;margin:30px auto">
+  <h3>Register (student)</h3>
+  <form method="POST" action="/register">
+    <input name="fullName" placeholder="Full name" required><br><br>
+    <input name="email" type="email" placeholder="Email" required><br><br>
+    <input name="studentId" placeholder="Student ID" required><br><br>
+    <input name="password" type="password" placeholder="Password (8+)" required><br><br>
+    <input name="confirmPassword" type="password" placeholder="Confirm password" required><br><br>
+    <button>Register</button>
+  </form>
+
+  <h3>Login</h3>
+  <form method="POST" action="/login">
+    <input name="email" type="email" placeholder="Email" required><br><br>
+    <input name="password" type="password" placeholder="Password" required><br><br>
+    <button>Login</button>
+  </form>
+
+  <p><a href="/student/dashboard">Student page</a> |
+     <a href="/staff/dashboard">Staff page</a> |
+     <a href="/admin/dashboard">Admin page</a> |
+     <a href="/logout">Logout</a></p>
+</body>
+</html>
