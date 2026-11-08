@@ -39,11 +39,15 @@ const service = (req, res) => {
 const queueStatus = (req, res) => {
     return res.render(res, 'student/queue-status', 'QueueStatus', 'queue-status');
 }
+const stdhistory = (req, res) => {
+    return res.render(res, 'student/history', 'History', 'history');
+}
 module.exports = {
     dashboard,
     profile,
     myQueues,
     service,
-    queueStatus
+    queueStatus,
+    stdhistory
 }
 
