@@ -5,11 +5,9 @@ const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 const ejsMate = require('ejs-mate');
-const pageRoutes = require('./routes/pageRoutes');
+const pageRoutes = require("./routes/pageRoutes");
 const viewLocals = require('./config/viewLocals');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
-const authRoutes = require('./routes/authRoutes');
-const roleRoutes = require('./routes/roleRoutes');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -46,8 +44,6 @@ app.use(session({
   }
 }));
 app.use(viewLocals);
-app.use('/', authRoutes);
-app.use('/', roleRoutes);
 app.use('/', pageRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok', app: 'QueueLess' }));

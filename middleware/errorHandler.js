@@ -1,10 +1,13 @@
-const notFound = (req, res) => {
-  res.status(404).send('404 - Page not found');
-};
+function notFound(req, res, next) {
+  res.status(404).render('errors/404', { title: 'Page not found' });
+}
 
-const errorHandler = (err, req, res, next) => {
+function errorHandler(err, req, res, next) {
   console.error(err);
-  res.status(err.status || 500).send('500 - Something went wrong');
-};
+  const status = err.status || 500;
+  res.status(status).render(status === 403 ? 'errors/403' : 'errors/500', {
+    title: status === 403 ? 'Access denied' : 'Something went wrong'
+  });
+}
 
 module.exports = { notFound, errorHandler };
