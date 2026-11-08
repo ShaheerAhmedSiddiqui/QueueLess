@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const ejsMate = require('ejs-mate');
 const pageRoutes = require("./routes/pageRoutes");
 const viewLocals = require('./config/viewLocals');
-// const { notFound, errorHandler } = require('./middleware/errorHandler');
+const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -47,8 +47,8 @@ app.use(viewLocals);
 app.use('/', pageRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok', app: 'QueueLess' }));
-// app.use(notFound);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
 if (require.main === module) {
   app.listen(PORT, () => console.log(`QueueLess is running at http://localhost:${PORT}`));
