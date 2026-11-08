@@ -1,4 +1,4 @@
-const { requireRole } = require('./auth');
+const { requireRole } = require('./roleMiddleware');
 
 // Preview mode is available only in development and must be explicitly requested.
 // Production always requires an authenticated student session.
