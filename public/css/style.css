@@ -269,11 +269,11 @@ textarea:focus-visible {
   align-items: center;
   padding: 20px;
   border-radius: 16px;
-  background: #f4faf8;
+  background: #222831;
 }
 
 .token-number {
-  color: var(--ql-ink);
+  color: var(--ql-mint);
   font: 800 2.65rem 'Manrope', sans-serif;
   letter-spacing: -.06em;
 }

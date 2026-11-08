@@ -7,7 +7,7 @@ const HOME = {
   ADMIN: '/admin/dashboard',
 };
 
-exports.register = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { fullName, email, studentId, password, confirmPassword } = req.body;
 
@@ -34,7 +34,7 @@ exports.register = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findByEmail((email || '').trim().toLowerCase());
@@ -51,9 +51,15 @@ exports.login = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.logout = (req, res) => {
+const logout = (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('queueless.sid');
     res.redirect('/login');
   });
 };
+
+module.exports = {
+  register,
+  login,
+  logout
+}
