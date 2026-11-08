@@ -33,9 +33,13 @@ const profile = (req, res) => {
 const myQueues = (req, res) => {
     return res.render(res, 'student/my-queues', 'MyQueues', 'myQueues');
 }
+const service = (req, res) => {
+    return res.render(res, 'student/services', 'Services', 'services');
+}
 module.exports = {
     dashboard,
     profile,
-    myQueues
+    myQueues,
+    service
 }
 
