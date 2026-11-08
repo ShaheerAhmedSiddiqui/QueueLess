@@ -1,0 +1,71 @@
+<% layout('layouts/student') -%>
+    <div class="page-intro">
+        <p class="page-kicker">CAMPUS DIRECTORY</p>
+        <h1>Available services</h1>
+        <p class="page-subtitle">Choose a university office, join its queue, and follow your token from anywhere.</p>
+    </div>
+    <div class="service-toolbar">
+        <div class="search-field"><i class="bi bi-search"></i><input id="serviceSearch" type="search"
+                class="form-control" placeholder="Search university services..." aria-label="Search services"></div>
+        <select id="serviceFilter" class="form-select service-filter" aria-label="Filter services">
+            <option value="all">All services</option>
+            <option value="available">Available now</option>
+            <option value="unavailable">Unavailable</option>
+        </select>
+    </div>
+    <div class="row g-3" id="serviceGrid">
+        <% services.forEach(service=> { %><div class="col-md-6 col-xl-4 service-grid-item"
+                data-name="<%= service.name.toLowerCase() %>"
+                data-status="<%= service.available ? 'available' : 'unavailable' %>">
+                <article class="service-directory-card h-100">
+                    <div class="d-flex justify-content-between align-items-start"><span class="service-icon"><i
+                                class="bi <%= service.icon %>"></i></span><span
+                            class="status-badge <%= service.available ? 'status-open' : 'status-paused' %>"><span></span>
+                            <%= service.available ? 'Available' : 'Unavailable' %>
+                        </span></div>
+                    <h2>
+                        <%= service.name %>
+                    </h2>
+                    <p>
+                        <%= service.description %>
+                    </p>
+                    <div class="service-meta">
+                        <div><span>People waiting</span><strong>
+                                <%= service.available ? service.queue : '—' %>
+                            </strong></div>
+                        <div><span>Est. wait</span><strong>
+                                <%= service.wait===null ? '—' : `${service.wait} min` %>
+                            </strong></div>
+                    </div><button class="btn <%= service.available ? 'btn-mint' : 'btn-disabled' %> w-100 mt-3"
+                        <%=service.available ? `data-join-service="${service.id}" data-service-name="${service.name}" `
+                        : 'disabled' %>><%= service.available ? 'Join queue' : 'Not accepting visits' %> <i
+                                class="bi bi-arrow-right ms-1"></i></button>
+                </article>
+            </div>
+            <% }) %>
+    </div>
+    <div class="empty-state d-none" id="noServices">
+        <div class="empty-state-icon"><i class="bi bi-search"></i></div>
+        <h3>No services found</h3>
+        <p>Try a different search term or filter.</p>
+    </div>
+    <div class="modal fade" id="joinQueueModal" tabindex="-1" aria-labelledby="joinQueueTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ql-modal">
+                <div class="modal-header">
+                    <div><span class="section-kicker">QUEUE REQUEST</span>
+                        <h2 class="modal-title" id="joinQueueTitle">Join this queue?</h2>
+                    </div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">You're about to request a queue token for:</p><strong id="selectedServiceName"
+                        class="fs-5"></strong>
+                    <div class="alert alert-light border mt-3 mb-0"><i class="bi bi-info-circle me-2"></i>This is a
+                        frontend preview. Queue creation will be enabled when the backend endpoint is implemented.</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-quiet"
+                        data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-mint"
+                        disabled>Confirm join</button></div>
+            </div>
+        </div>
+    </div>
