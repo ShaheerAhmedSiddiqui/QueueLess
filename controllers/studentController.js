@@ -23,9 +23,23 @@ function render(res, view, title, activePage, extra = {}) {
 }
 
 
-const dashboard = (req, res) => render(res, 'student/dashboard', 'Dashboard', 'dashboard');
+const dashboard = (req, res) => {
+    return res.render(res, 'student/dashboard', 'Dashboard', 'dashboard');
+}
 
+const profile = (req, res) => {
+    return res.render(res, 'student/profile', 'Profile', 'profile');
+}
+const myQueues = (req, res) => {
+    return res.render(res, 'student/my-queues', 'MyQueues', 'myQueues');
+}
+const service = (req, res) => {
+    return res.render(res, 'student/services', 'Services', 'services');
+}
 module.exports = {
-    dashboard
+    dashboard,
+    profile,
+    myQueues,
+    service
 }
 

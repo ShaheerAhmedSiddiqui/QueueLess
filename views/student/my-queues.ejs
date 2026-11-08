@@ -1,0 +1,87 @@
+<% layout('layouts/student') -%>
+    <div class="page-intro">
+        <p class="page-kicker">QUEUE OVERVIEW</p>
+        <h1>My queues</h1>
+        <p class="page-subtitle">Manage your active visits and review previous queue requests.</p>
+    </div>
+    <div class="content-card">
+        <div class="card-heading flex-wrap">
+            <div><span class="section-kicker">QUEUE RECORDS</span>
+                <h2>Your queue activity</h2>
+            </div>
+            <div class="table-toolbar">
+                <div class="search-field compact-search"><i class="bi bi-search"></i><input type="search"
+                        id="queueSearch" class="form-control" placeholder="Search token or service..."
+                        aria-label="Search queues"></div>
+            </div>
+        </div>
+        <ul class="nav nav-pills ql-tabs mb-3" id="queueTabs">
+            <li class="nav-item"><button class="nav-link active" data-queue-filter="all">All queues
+                    <span>5</span></button></li>
+            <li class="nav-item"><button class="nav-link" data-queue-filter="active">Active <span>1</span></button></li>
+            <li class="nav-item"><button class="nav-link" data-queue-filter="past">Past <span>4</span></button></li>
+        </ul>
+        <div class="table-responsive">
+            <table class="table ql-table align-middle" id="queuesTable">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Service</th>
+                        <th>Date joined</th>
+                        <th>Status</th>
+                        <th>Wait time</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-state="active" data-search="ex-042 examination office">
+                        <td><strong class="table-token">EX-042</strong></td>
+                        <td>Examination Office</td>
+                        <td>Nov 8, 2026 · 10:24 AM</td>
+                        <td><span class="status-badge status-waiting">Waiting</span></td>
+                        <td>~10 min</td>
+                        <td class="text-end"><a class="table-action"
+                                href="/student/queue-status<%= demoMode ? '?preview=1' : '' %>">View <i
+                                    class="bi bi-arrow-up-right"></i></a></td>
+                    </tr>
+                    <tr data-state="past" data-search="sa-018 student affairs">
+                        <td><strong class="table-token">SA-018</strong></td>
+                        <td>Student Affairs</td>
+                        <td>Oct 28, 2026 · 11:42 AM</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>8 min</td>
+                        <td class="text-end"><span class="text-muted">—</span></td>
+                    </tr>
+                    <tr data-state="past" data-search="fo-031 fee office">
+                        <td><strong class="table-token">FO-031</strong></td>
+                        <td>Fee Office</td>
+                        <td>Oct 19, 2026 · 09:15 AM</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>12 min</td>
+                        <td class="text-end"><span class="text-muted">—</span></td>
+                    </tr>
+                    <tr data-state="past" data-search="it-009 it support">
+                        <td><strong class="table-token">IT-009</strong></td>
+                        <td>IT Support</td>
+                        <td>Oct 12, 2026 · 02:05 PM</td>
+                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                        <td>—</td>
+                        <td class="text-end"><span class="text-muted">—</span></td>
+                    </tr>
+                    <tr data-state="past" data-search="ex-026 examination office">
+                        <td><strong class="table-token">EX-026</strong></td>
+                        <td>Examination Office</td>
+                        <td>Sep 30, 2026 · 10:30 AM</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>6 min</td>
+                        <td class="text-end"><span class="text-muted">—</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state d-none" id="queuesEmpty">
+            <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+            <h3>No matching queues</h3>
+            <p>Try changing your search or selected filter.</p>
+        </div>
+    </div>
