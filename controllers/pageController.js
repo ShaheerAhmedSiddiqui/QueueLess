@@ -16,7 +16,6 @@ const register = (req, res) => {
 const forgotPassword = (req, res) => {
     return res.render('auth/forgot-password', {title: 'forgot password'})
 }
-
 const resetPassword = (req, res) => {
     return res.render('auth/reset-password', {title: 'reset password'})
 }
