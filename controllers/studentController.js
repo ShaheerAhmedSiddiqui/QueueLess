@@ -30,8 +30,12 @@ const dashboard = (req, res) => {
 const profile = (req, res) => {
     return res.render(res, 'student/profile', 'Profile', 'profile');
 }
+const myQueues = (req, res) => {
+    return res.render(res, 'student/my-queues', 'MyQueues', 'myQueues');
+}
 module.exports = {
     dashboard,
-    profile
+    profile,
+    myQueues
 }
 
