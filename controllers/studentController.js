@@ -1,3 +1,6 @@
+const Service = require('../models/Service');
+const queueService = require('../services/queueService');
+
 const services = [
   { id: 1, name: 'Student Affairs', icon: 'bi-people', description: 'Academic records, enrollment letters and general student support.', queue: 4, wait: 12, available: true },
   { id: 2, name: 'Fee Office', icon: 'bi-wallet2', description: 'Fee statements, challans and account-related assistance.', queue: 7, wait: 21, available: true },
@@ -42,12 +45,42 @@ const queueStatus = (req, res) => {
 const stdhistory = (req, res) => {
     return res.render(res, 'student/history', 'History', 'history');
 }
+
+const joinQueue = async (req, res, next) => {
+  try {
+    // Get the logged-in user's database ID
+    const studentId = req.session?.user?.id;
+
+    // Preview mode does not have a real database user
+    if (!studentId) {
+      return res.status(401).send(
+        'Please log in with a student account to join a queue.'
+      );
+    }
+
+    const serviceId = Number(req.body.serviceId);
+
+    if (!Number.isInteger(serviceId) || serviceId <= 0) {
+      return res.status(400).send('Invalid service selected.');
+    }
+
+    const result = await queueService.joinQueue(studentId, serviceId);
+
+    return res.redirect(
+      `/student/queue-status?token=${encodeURIComponent(result.token)}`
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
     dashboard,
     profile,
     myQueues,
     service,
     queueStatus,
-    stdhistory
+    stdhistory,
+    joinQueue
 }
 
