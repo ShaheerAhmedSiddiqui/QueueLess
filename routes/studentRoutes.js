@@ -1,5 +1,13 @@
 const express = require('express');
-const {dashboard, profile, myQueues, service, queueStatus, stdhistory} = require('../controllers/studentController');
+const {
+  dashboard,
+  profile,
+  myQueues,
+  service,
+  queueStatus,
+  stdhistory,
+  joinQueue
+} = require('../controllers/studentController');
 const studentAccess = require('../middleware/studentAccess');
 const router = express.Router();
 router.use(studentAccess);
@@ -9,7 +17,7 @@ router.get('/my-queues', myQueues);
 router.get('/services', service);
 router.get('/queue-status', queueStatus);
 router.get('/history', stdhistory);
-
+router.post('/join-queue', joinQueue);
 
 
 
