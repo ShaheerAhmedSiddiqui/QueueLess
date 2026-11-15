@@ -1,12 +1,27 @@
-const pool = require('../config/database');
+
+const { pool } = require('../config/database');
 
 async function findByEmail(email) {
-  const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+  const [rows] = await pool.query(
+    'SELECT * FROM users WHERE email = ?',
+    [email]
+  );
+  return rows[0] || null;
+}
+
+async function findById(id) {
+  const [rows] = await pool.query(
+    'SELECT * FROM users WHERE id = ?',
+    [id]
+  );
   return rows[0] || null;
 }
 
 async function findByStudentId(studentId) {
-  const [rows] = await pool.query('SELECT id FROM users WHERE student_id = ?', [studentId]);
+  const [rows] = await pool.query(
+    'SELECT id FROM users WHERE student_id = ?',
+    [studentId]
+  );
   return rows[0] || null;
 }
 
@@ -18,4 +33,27 @@ async function create({ fullName, email, studentId, passwordHash, role = 'STUDEN
   return result.insertId;
 }
 
-module.exports = { findByEmail, findByStudentId, create };
+async function updateProfile(id, fullName) {
+  const [result] = await pool.query(
+    'UPDATE users SET full_name = ? WHERE id = ?',
+    [fullName, id]
+  );
+  return result.affectedRows;
+}
+
+async function updatePassword(id, passwordHash) {
+  const [result] = await pool.query(
+    'UPDATE users SET password_hash = ? WHERE id = ?',
+    [passwordHash, id]
+  );
+  return result.affectedRows;
+}
+
+module.exports = {
+  findByEmail,
+  findById,
+  findByStudentId,
+  create,
+  updateProfile,
+  updatePassword
+};

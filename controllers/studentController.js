@@ -1,5 +1,8 @@
+const bcrypt = require('bcrypt');
+const User = require('../models/User');
 const Service = require('../models/Service');
 const queueService = require('../services/queueService');
+const QueueToken = require('../models/QueueToken');
 
 const services = [
     { id: 1, name: 'Student Affairs', icon: 'bi-people', description: 'Academic records, enrollment letters and general student support.', queue: 4, wait: 12, available: true },
@@ -73,61 +76,317 @@ function render(req, res, view, title, activePage, extra = {}) {
 }
 
 // Student Dashboard
-const dashboard = (req, res) => {
-    return render(req, res, 'student/dashboard', 'Dashboard', 'dashboard');
-};
+const dashboard = async (req, res, next) => {
+    try {
+        const studentId = req.session?.user?.id;
 
+        if (!studentId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        const [activeQueues, history, dbServices] = await Promise.all([
+            queueService.getMyQueues(studentId),
+            queueService.getMyHistory(studentId),
+            Service.getAllServices()
+        ]);
+
+        return render(
+            req,
+            res,
+            'student/dashboard',
+            'Dashboard',
+            'dashboard',
+            {
+                data: {
+                    activeQueues,
+                    history,
+                    services: dbServices
+                }
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
+};
 // Student Profile
 const profile = (req, res) => {
-    return render(req, res, 'student/profile', 'My Profile', 'profile');
+    return render(req, res, 'student/profile', 'My Profile', 'profile', {
+        data: {
+            queryStatus: req.query.status
+        }
+    });
 };
+
+
+const updateProfile = async (req, res, next) => {
+    try {
+        if (req.session.demoStudent) {
+            return res.status(403).send('Profile updates are unavailable in demo preview.');
+        }
+
+        const userId = req.session.user?.id;
+        if (!userId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        const fullName = String(req.body.fullName || '').trim();
+
+        if (!fullName) {
+            return res.status(400).send('Full name is required.');
+        }
+
+        if (fullName.length > 120) {
+            return res.status(400).send('Full name cannot exceed 120 characters.');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('Account not found.');
+        }
+
+        await User.updateProfile(userId, fullName);
+
+        req.session.user.fullName = fullName;
+        req.session.user.name = fullName;
+
+        return res.redirect('/student/profile?status=profile-updated');
+    } catch (err) {
+        next(err);
+    }
+};
+
+const changePassword = async (req, res, next) => {
+    try {
+        if (req.session.demoStudent) {
+            return res.status(403).send('Password changes are unavailable in demo preview.');
+        }
+
+        const userId = req.session.user?.id;
+        if (!userId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        const currentPassword = String(req.body.currentPassword || '');
+        const newPassword = String(req.body.newPassword || '');
+        const confirmPassword = String(req.body.confirmNewPassword || '');
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).send('All password fields are required.');
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).send('New password must be at least 8 characters.');
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).send('New passwords do not match.');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('Account not found.');
+        }
+
+        const isCurrentPasswordValid = await bcrypt.compare(
+            currentPassword,
+            user.password_hash
+        );
+
+        if (!isCurrentPasswordValid) {
+            return res.status(400).send('Current password is incorrect.');
+        }
+
+        if (await bcrypt.compare(newPassword, user.password_hash)) {
+            return res.status(400).send('New password must be different from the current password.');
+        }
+
+        const passwordHash = await bcrypt.hash(newPassword, 10);
+        await User.updatePassword(userId, passwordHash);
+
+        return res.redirect('/student/profile?status=password-updated');
+    } catch (err) {
+        next(err);
+    }
+};
+
 
 // My Queues
-const myQueues = (req, res) => {
-    return render(req, res, 'student/my-queues', 'My Queues', 'my-queues');
-};
+const myQueues = async (req, res, next) => {
+    try {
+        const studentId = req.session?.user?.id;
 
+        if (!studentId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        const [activeQueues, history] = await Promise.all([
+            queueService.getMyQueues(studentId),
+            queueService.getMyHistory(studentId)
+        ]);
+        return render(
+            req,
+            res,
+            'student/my-queues',
+            'My Queues',
+            'my-queues',
+            {
+                data: {
+                    activeQueues,
+                    history
+                }
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
+};
 // Available Services
-const service = (req, res) => {
-    return render(req, res, 'student/services', 'Available Services', 'services');
+const service = async (req, res, next) => {
+    try {
+        const dbServices = await Service.getAllServices();
+
+        return render(
+            req,
+            res,
+            'student/services',
+            'Available Services',
+            'services',
+            {
+                data: {
+                services: dbServices,
+                queryStatus: req.query.status
+            }
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
 };
 
 // Queue Status
-const queueStatus = (req, res) => {
-    return render(req, res, 'student/queue-status', 'Queue Status', 'queue-status');
+
+const queueStatus = async (req, res, next) => {
+    try {
+        const studentId = req.session?.user?.id;
+        const tokenNumber = req.query.token;
+
+        if (!studentId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        if (!tokenNumber) {
+            return res.status(400).send('Queue token is required.');
+        }
+
+        const token = await QueueToken.getTokenByNumber(
+            tokenNumber,
+            studentId
+        );
+
+        if (!token) {
+            return res.status(404).send('Queue token not found.');
+        }
+
+        const position = await QueueToken.getQueuePosition(
+            token.id,
+            studentId
+        );
+
+        if (!position) {
+            return res.status(404).send('Queue position not found.');
+        }
+
+        const service = await Service.getServiceById(token.service_id);
+
+        const activeQueueData = {
+            id: token.id,
+            token: token.token_number,
+            status: position.status,
+            position: position.position,
+            ahead: position.ahead,
+            serviceName: service ? service.name : 'Unknown service',
+            joinedAt: token.joined_at
+        };
+
+        return render(
+            req,
+            res,
+            'student/queue-status',
+            'Queue Status',
+            'queue-status',
+            {
+                data: {
+                    activeQueue: activeQueueData
+                }
+            }
+        );
+
+    } catch (err) {
+        next(err);
+    }
 };
 
+
 // Queue History
-const stdhistory = (req, res) => {
-    return res.render(res, 'student/history', 'History', 'history');
-}
+const stdhistory = async (req, res, next) => {
+    try {
+        const studentId = req.session?.user?.id;
 
+        if (!studentId) {
+            return res.status(401).send('Please log in first.');
+        }
+
+        const history = await queueService.getMyHistory(studentId);
+
+        return render(
+            req,
+            res,
+            'student/history',
+            'History',
+            'history',
+            {
+                data: {
+                    history
+                }
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
+};
+
+//Join Queue
 const joinQueue = async (req, res, next) => {
-  try {
-    // Get the logged-in user's database ID
-    const studentId = req.session?.user?.id;
+    try {
+        // Get the logged-in user's database ID
+        const studentId = req.session?.user?.id;
 
-    // Preview mode does not have a real database user
-    if (!studentId) {
-      return res.status(401).send(
-        'Please log in with a student account to join a queue.'
-      );
+        // Preview mode does not have a real database user
+        if (!studentId) {
+            return res.status(401).send(
+                'Please log in with a student account to join a queue.'
+            );
+        }
+
+        const rawServiceId = String(req.body.serviceId || '').trim();
+        const serviceId = Number(rawServiceId.replace(/^["']|["']$/g, ''));
+
+        if (!Number.isInteger(serviceId) || serviceId <= 0) {
+            return res.status(400).send('Invalid service selected.');
+        }
+
+        const result = await queueService.joinQueue(studentId, serviceId);
+
+        return res.redirect(
+            `/student/queue-status?token=${encodeURIComponent(result.token)}`
+        );
+    } catch (err) {
+        if (err.message === 'You already have an active token for this service') {
+            return res.redirect('/student/services?status=already-joined');
+        }
+
+        next(err);
     }
-
-    const serviceId = Number(req.body.serviceId);
-
-    if (!Number.isInteger(serviceId) || serviceId <= 0) {
-      return res.status(400).send('Invalid service selected.');
-    }
-
-    const result = await queueService.joinQueue(studentId, serviceId);
-
-    return res.redirect(
-      `/student/queue-status?token=${encodeURIComponent(result.token)}`
-    );
-  } catch (err) {
-    next(err);
-  }
 };
 
 module.exports = {
@@ -137,6 +396,8 @@ module.exports = {
     service,
     queueStatus,
     stdhistory,
-    joinQueue
+    joinQueue,
+    updateProfile,
+    changePassword,
 }
 

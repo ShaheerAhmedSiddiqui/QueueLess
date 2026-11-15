@@ -1,142 +1,355 @@
+
 <% layout('layouts/student') -%>
-    <div class="page-intro d-flex flex-wrap justify-content-between align-items-end gap-3">
-        <div>
-            <p class="page-kicker">SUNDAY, NOVEMBER 8, 2026</p>
-            <h1>Good morning, <%=
-                    student.fullName.split(' ')[0] %> <span class="wave">✦</span></h1><p class="page-subtitle">Here' s
-                    what's happening with your campus services today.</p>
-        </div><a class="btn btn-mint" href="/student/services<%= demoMode ? '?preview=1' : '' %>"><i
-                class="bi bi-plus-lg me-2"></i>Join a queue</a>
+
+<%
+    var queueList = Array.isArray(activeQueues) ? activeQueues : [];
+    var historyList = Array.isArray(history) ? history : [];
+    var serviceList = Array.isArray(services) ? services : [];
+
+    var currentQueue = queueList.length > 0 ? queueList[0] : null;
+
+    var progressWidth = currentQueue && currentQueue.position
+        ? Math.max(5, 100 / currentQueue.position)
+        : 100;
+
+    var completedCount = historyList.filter(function(item) {
+        return String(item.status || '').toUpperCase() === 'COMPLETED';
+    }).length;
+
+    var availableCount = serviceList.filter(function(service) {
+        return Boolean(service.available);
+    }).length;
+
+    var firstName = 'Student';
+
+    if (student && student.fullName) {
+        firstName = String(student.fullName).split(' ')[0];
+    }
+
+    function formatDate(value) {
+        if (!value) return '—';
+
+        var date = new Date(value);
+
+        if (isNaN(date.getTime())) return '—';
+
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function formatTime(value) {
+        if (!value) return '—';
+
+        var date = new Date(value);
+
+        if (isNaN(date.getTime())) return '—';
+
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    function displayStatus(status) {
+        var value = String(status || 'UNKNOWN').toUpperCase();
+        return value.charAt(0) + value.slice(1).toLowerCase();
+    }
+%>
+
+<div class="page-intro d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <p class="page-kicker"><%= new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        }).toUpperCase() %></p>
+
+        <h1>Good day, <%= firstName %> <span class="wave">✦</span></h1>
+
+        <p class="page-subtitle">
+            Here's what's happening with your campus services today.
+        </p>
     </div>
-    <div class="row g-3 stat-grid mb-4">
-        <div class="col-sm-6 col-xl-4">
-            <article class="stat-card">
-                <div class="stat-icon mint-icon"><i class="bi bi-ticket-perforated"></i></div>
-                <div class="stat-label">Active queues</div>
-                <div class="stat-value">01</div>
-                <div class="stat-foot"><span class="stat-dot dot-mint"></span> You have one active token</div>
-            </article>
-        </div>
-        <div class="col-sm-6 col-xl-4">
-            <article class="stat-card">
-                <div class="stat-icon dark-icon"><i class="bi bi-check2-circle"></i></div>
-                <div class="stat-label">Completed services</div>
-                <div class="stat-value">08</div>
-                <div class="stat-foot">Across all university offices</div>
-            </article>
-        </div>
-        <div class="col-sm-6 col-xl-4">
-            <article class="stat-card">
-                <div class="stat-icon gray-icon"><i class="bi bi-buildings"></i></div>
-                <div class="stat-label">Available services</div>
-                <div class="stat-value">05 <small>of 06</small></div>
-                <div class="stat-foot">One service currently unavailable</div>
-            </article>
-        </div>
+
+    <a class="btn btn-mint" href="/student/services">
+        <i class="bi bi-plus-lg me-2"></i>Join a queue
+    </a>
+</div>
+
+<div class="row g-3 stat-grid mb-4">
+
+    <div class="col-sm-6 col-xl-4">
+        <article class="stat-card">
+            <div class="stat-icon mint-icon">
+                <i class="bi bi-ticket-perforated"></i>
+            </div>
+            <div class="stat-label">Active queues</div>
+            <div class="stat-value"><%= queueList.length %></div>
+            <div class="stat-foot">
+                <span class="stat-dot dot-mint"></span>
+                Your current active tokens
+            </div>
+        </article>
     </div>
-    <div class="row g-4">
-        <div class="col-xl-7">
-            <section class="content-card h-100">
-                <div class="card-heading">
-                    <div><span class="section-kicker">YOUR CURRENT VISIT</span>
-                        <h2>Active queue</h2>
-                    </div><a class="text-link" href="/student/queue-status<%= demoMode ? '?preview=1' : '' %>">View
-                        details <i class="bi bi-arrow-up-right"></i></a>
+
+    <div class="col-sm-6 col-xl-4">
+        <article class="stat-card">
+            <div class="stat-icon dark-icon">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="stat-label">Completed services</div>
+            <div class="stat-value"><%= completedCount %></div>
+            <div class="stat-foot">Across all university offices</div>
+        </article>
+    </div>
+
+    <div class="col-sm-6 col-xl-4">
+        <article class="stat-card">
+            <div class="stat-icon gray-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <div class="stat-label">Available services</div>
+            <div class="stat-value">
+                <%= availableCount %>
+                <small>of <%= serviceList.length %></small>
+            </div>
+            <div class="stat-foot">Currently available university services</div>
+        </article>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-xl-7">
+        <section class="content-card h-100">
+
+            <div class="card-heading">
+                <div>
+                    <span class="section-kicker">YOUR CURRENT VISIT</span>
+                    <h2>Active queue</h2>
                 </div>
+
+                <% if (currentQueue) { %>
+                    <a class="text-link"
+                       href="/student/queue-status?token=<%= encodeURIComponent(currentQueue.token_number) %>">
+                        View details <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                <% } %>
+            </div>
+
+            <% if (currentQueue) { %>
+
                 <div class="active-queue-panel">
+
                     <div class="d-flex justify-content-between align-items-start gap-2">
-                        <div><span class="muted-label">EXAMINATION OFFICE</span>
-                            <h3>Examination Office</h3>
-                            <p><i class="bi bi-geo-alt me-1"></i>Counter 02 · Main campus</p>
-                        </div><span class="status-badge status-waiting"> <span></span> Waiting</span>
+                        <div>
+                            <span class="muted-label">
+                                <%= (currentQueue.service_name || 'UNIVERSITY SERVICE').toUpperCase() %>
+                            </span>
+
+                            <h3><%= currentQueue.service_name || 'Unknown service' %></h3>
+
+                            <p>
+                                <i class="bi bi-geo-alt me-1"></i>
+                                <%= currentQueue.counter_name || 'Counter not assigned' %>
+                            </p>
+                        </div>
+
+                        <span class="status-badge status-waiting">
+                            <span></span>
+                            <%= displayStatus(currentQueue.status) %>
+                        </span>
                     </div>
+
                     <div class="active-token-row">
-                        <div><span class="muted-label">YOUR TOKEN NUMBER</span>
-                            <div class="active-token">EX-042</div>
+                        <div>
+                            <span class="muted-label">YOUR TOKEN NUMBER</span>
+                            <div class="active-token"><%= currentQueue.token_number %></div>
                         </div>
+
                         <div class="queue-mini-stats">
-                            <div><strong>03</strong><span>Position</span></div>
-                            <div><strong>10 <small>min</small></strong><span>Est. wait</span></div>
+                            <div>
+                                <strong><%= currentQueue.position || '—' %></strong>
+                                <span>Position</span>
+                            </div>
+                            <div>
+                                <strong><%= currentQueue.ahead != null ? currentQueue.ahead : 0 %></strong>
+                                <span>People ahead</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="queue-progress-label"><span>Queue progress</span><strong>2 people ahead</strong></div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:42%"></div>
+
+                    <div class="queue-progress-label">
+                        <span>Queue position</span>
+                        <strong>
+                            <%= currentQueue.position
+                                ? 'Position ' + currentQueue.position
+                                : 'Being processed' %>
+                        </strong>
                     </div>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3"><small
-                            class="text-muted"><i class="bi bi-clock me-1"></i>Joined today at 10:24 AM</small><a
-                            class="btn btn-dark-soft btn-sm"
-                            href="/student/queue-status<%= demoMode ? '?preview=1' : '' %>">Track queue <i
-                                class="bi bi-arrow-right ms-1"></i></a></div>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                data-width="<%= progressWidth %>">
+                            </div>
+                        </div>
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            Joined <%= formatDate(currentQueue.joined_at) %>
+                            at <%= formatTime(currentQueue.joined_at) %>
+                        </small>
+
+                        <a class="btn btn-dark-soft btn-sm"
+                           href="/student/queue-status?token=<%= encodeURIComponent(currentQueue.token_number) %>">
+                            Track queue <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
                 </div>
-                <p class="sample-caption mt-3 mb-0"><i class="bi bi-info-circle me-1"></i>Illustrative queue information
-                    for interface preview.</p>
-            </section>
-        </div>
-        <div class="col-xl-5">
-            <section class="content-card h-100">
-                <div class="card-heading">
-                    <div><span class="section-kicker">QUICK ACCESS</span>
-                        <h2>Find a service</h2>
-                    </div><a class="text-link" href="/student/services<%= demoMode ? '?preview=1' : '' %>">All
-                        services</a>
+
+            <% } else { %>
+
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <h3>No active queue</h3>
+                    <p>You haven't joined any active queue yet.</p>
+                    <a class="btn btn-mint mt-2" href="/student/services">
+                        Browse services
+                    </a>
                 </div>
-                <div class="quick-service-list">
-                    <% services.slice(0,4).forEach(service=> { %><a class="quick-service"
-                            href="/student/services<%= demoMode ? '?preview=1' : '' %>"><span
-                                class="service-icon-small"><i class="bi <%= service.icon %>"></i></span><span
-                                class="quick-service-copy"><strong>
-                                    <%= service.name %>
-                                </strong><small>
-                                    <%= service.available ? `${service.queue} people waiting` : 'Currently unavailable'
-                                        %>
-                                </small></span><i class="bi bi-chevron-right quick-chevron"></i></a>
-                        <% }) %>
-                </div>
-            </section>
-        </div>
-        <div class="col-12">
-            <section class="content-card">
-                <div class="card-heading">
-                    <div><span class="section-kicker">YOUR ACTIVITY</span>
-                        <h2>Recent queue history</h2>
-                    </div><a class="text-link" href="/student/history<%= demoMode ? '?preview=1' : '' %>">View history
-                        <i class="bi bi-arrow-up-right"></i></a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table ql-table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Token</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th class="text-end">Duration</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% history.slice(0,3).forEach(item=> { %><tr>
-                                    <td><strong class="table-token">
-                                            <%= item.token %>
-                                        </strong></td>
-                                    <td>
-                                        <%= item.service %>
-                                    </td>
-                                    <td>
-                                        <%= item.date %>
-                                    </td>
-                                    <td><span
-                                            class="status-badge <%= item.status === 'Completed' ? 'status-completed' : 'status-cancelled' %>">
-                                            <%= item.status %>
-                                        </span></td>
-                                    <td class="text-end">
-                                        <%= item.duration %>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+
+            <% } %>
+
+        </section>
     </div>
+
+    <div class="col-xl-5">
+        <section class="content-card h-100">
+
+            <div class="card-heading">
+                <div>
+                    <span class="section-kicker">QUICK ACCESS</span>
+                    <h2>Find a service</h2>
+                </div>
+                <a class="text-link" href="/student/services">All services</a>
+            </div>
+
+            <div class="quick-service-list">
+
+                <% serviceList.slice(0, 4).forEach(function(service) { %>
+
+                    <a class="quick-service" href="/student/services">
+                        <span class="service-icon-small">
+                            <i class="bi <%= service.icon || 'bi-building' %>"></i>
+                        </span>
+
+                        <span class="quick-service-copy">
+                            <strong><%= service.name %></strong>
+                            <small>
+                                <%= service.available
+                                    ? (service.queue || 0) + ' people waiting'
+                                    : 'Currently unavailable' %>
+                            </small>
+                        </span>
+
+                        <i class="bi bi-chevron-right quick-chevron"></i>
+                    </a>
+
+                <% }); %>
+
+                <% if (serviceList.length === 0) { %>
+                    <p class="text-muted text-center py-3">
+                        No services available.
+                    </p>
+                <% } %>
+
+            </div>
+
+        </section>
+    </div>
+
+    <div class="col-12">
+        <section class="content-card">
+
+            <div class="card-heading">
+                <div>
+                    <span class="section-kicker">YOUR ACTIVITY</span>
+                    <h2>Recent queue history</h2>
+                </div>
+
+                <a class="text-link" href="/student/history">
+                    View history <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table ql-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Duration</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% historyList.slice(0, 3).forEach(function(item) {
+                            var status = String(item.status || '').trim().toUpperCase();
+                            var dateValue = item.completed_at || item.joined_at;
+                        %>
+
+                            <tr>
+                                <td>
+                                    <strong class="table-token">
+                                        <%= item.token_number || '—' %>
+                                    </strong>
+                                </td>
+                                <td><%= item.service_name || 'Unknown service' %></td>
+                                <td><%= formatDate(dateValue) %></td>
+                                <td>
+                                    <span class="status-badge <%= status === 'COMPLETED'
+                                        ? 'status-completed'
+                                        : 'status-cancelled' %>">
+                                        <%= displayStatus(status) %>
+                                    </span>
+                                </td>
+                                <td class="text-end">—</td>
+                            </tr>
+
+                        <% }); %>
+
+                        <% if (historyList.length === 0) { %>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No past queue activity yet.
+                                </td>
+                            </tr>
+                        <% } %>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.progress-bar[data-width]').forEach(function (bar) {
+    bar.style.width = bar.dataset.width + '%';
+});
+</script>

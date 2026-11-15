@@ -45,7 +45,14 @@ const login = async (req, res, next) => {
 
     req.session.regenerate((err) => {
       if (err) return next(err);
-      req.session.user = { id: user.id, name: user.full_name, role: user.role };
+      req.session.user = {
+        id: user.id,
+        name: user.full_name,
+        fullName: user.full_name,
+        email: user.email,
+        studentId: user.student_id,
+        role: user.role
+      };
       res.redirect(HOME[user.role]);
     });
   } catch (err) { next(err); }

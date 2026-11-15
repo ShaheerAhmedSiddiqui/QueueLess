@@ -1,87 +1,239 @@
+
 <% layout('layouts/student') -%>
-    <div class="page-intro">
-        <p class="page-kicker">YOUR RECORDS</p>
-        <h1>Queue history</h1>
-        <p class="page-subtitle">A record of the university services you've visited through QueueLess.</p>
+
+<%
+    const records = Array.isArray(history) ? history : [];
+
+    const totalVisits = records.length;
+    const completedCount = records.filter(item => item.status === 'COMPLETED').length;
+    const cancelledCount = records.filter(item => item.status === 'CANCELLED').length;
+    const skippedCount = records.filter(item => item.status === 'SKIPPED').length;
+
+    function formatDate(value) {
+        if (!value) return '—';
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) return '—';
+
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function formatTime(value) {
+        if (!value) return '—';
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) return '—';
+
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    function formatStatus(status) {
+        return status
+            ? status.charAt(0) + status.slice(1).toLowerCase()
+            : 'Unknown';
+    }
+%>
+
+<div class="page-intro">
+    <p class="page-kicker">YOUR RECORDS</p>
+    <h1>Queue history</h1>
+    <p class="page-subtitle">
+        A record of the university services you've visited through QueueLess.
+    </p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-3">
+        <div class="mini-summary-card">
+            <span>Total visits</span>
+            <strong><%= totalVisits %></strong>
+            <small>All recorded requests</small>
+        </div>
     </div>
-    <div class="row g-3 mb-4">
-        <div class="col-sm-4">
-            <div class="mini-summary-card"><span>Total visits</span><strong>08</strong><small>All recorded
-                    requests</small></div>
-        </div>
-        <div class="col-sm-4">
-            <div class="mini-summary-card"><span>Completed</span><strong>07</strong><small>Successfully served</small>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="mini-summary-card"><span>Cancelled</span><strong>01</strong><small>Cancelled requests</small>
-            </div>
+
+    <div class="col-sm-3">
+        <div class="mini-summary-card">
+            <span>Completed</span>
+            <strong><%= completedCount %></strong>
+            <small>Successfully served</small>
         </div>
     </div>
-    <div class="content-card">
-        <div class="card-heading flex-wrap">
-            <div><span class="section-kicker">PAST ACTIVITY</span>
-                <h2>Service visits</h2>
-            </div>
-            <div class="history-filters">
-                <div class="search-field compact-search"><i class="bi bi-search"></i><input id="historySearch"
-                        type="search" class="form-control" placeholder="Search history..." aria-label="Search history">
-                </div><select id="historyStatus" class="form-select" aria-label="Filter by status">
-                    <option value="all">All statuses</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
-            </div>
+
+    <div class="col-sm-3">
+        <div class="mini-summary-card">
+            <span>Cancelled</span>
+            <strong><%= cancelledCount %></strong>
+            <small>Cancelled requests</small>
         </div>
-        <div class="table-responsive">
-            <table class="table ql-table align-middle" id="historyTable">
-                <thead>
-                    <tr>
-                        <th>Token</th>
-                        <th>Service</th>
-                        <th>Date & time</th>
-                        <th>Final status</th>
-                        <th class="text-end">Duration</th>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="mini-summary-card">
+            <span>Skipped</span>
+            <strong><%= skippedCount %></strong>
+            <small>Missed queue turns</small>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-heading flex-wrap">
+        <div>
+            <span class="section-kicker">PAST ACTIVITY</span>
+            <h2>Service visits</h2>
+        </div>
+
+        <div class="history-filters">
+            <div class="search-field compact-search">
+                <i class="bi bi-search"></i>
+                <input
+                    id="historySearch"
+                    type="search"
+                    class="form-control"
+                    placeholder="Search history..."
+                    aria-label="Search history">
+            </div>
+
+            <select
+                id="historyStatus"
+                class="form-select"
+                aria-label="Filter by status">
+                <option value="all">All statuses</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+                <option value="SKIPPED">Skipped</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table ql-table align-middle" id="historyTable">
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Service</th>
+                    <th>Date & time</th>
+                    <th>Final status</th>
+                    <th class="text-end">Duration</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% records.forEach(item => {
+                    const status = (item.status || '').toUpperCase();
+                    const dateValue = item.completed_at || item.joined_at;
+                    const displayStatus = formatStatus(status);
+                %>
+                    <tr
+                        data-status="<%= status %>"
+                        data-search="<%= `${item.token_number || ''} ${item.service_name || ''} ${displayStatus}`.toLowerCase() %>">
+
+                        <td>
+                            <strong class="table-token">
+                                <%= item.token_number || '—' %>
+                            </strong>
+                        </td>
+
+                        <td>
+                            <%= item.service_name || 'Unknown service' %>
+                        </td>
+
+                        <td>
+                            <%= formatDate(dateValue) %>
+                            <small class="d-block text-muted">
+                                <%= formatTime(dateValue) %>
+                            </small>
+                        </td>
+
+                        <td>
+                            <span class="status-badge <%= status === 'COMPLETED' ? 'status-completed' : 'status-cancelled' %>">
+                                <%= displayStatus %>
+                            </span>
+                        </td>
+
+                        <td class="text-end">—</td>
                     </tr>
-                </thead>
-                <tbody>
-                    <% history.forEach(item=> { %><tr data-status="<%= item.status %>"
-                            data-search="<%= `${item.token} ${item.service} ${item.date}`.toLowerCase() %>">
-                            <td><strong class="table-token">
-                                    <%= item.token %>
-                                </strong></td>
-                            <td>
-                                <%= item.service %>
-                            </td>
-                            <td>
-                                <%= item.date %><small class="d-block text-muted">
-                                        <%= item.time %>
-                                    </small>
-                            </td>
-                            <td><span
-                                    class="status-badge <%= item.status === 'Completed' ? 'status-completed' : 'status-cancelled' %>">
-                                    <%= item.status %>
-                                </span></td>
-                            <td class="text-end">
-                                <%= item.duration %>
-                            </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
-            </table>
-        </div>
-        <div class="empty-state d-none" id="historyEmpty">
-            <div class="empty-state-icon"><i class="bi bi-calendar2-x"></i></div>
-            <h3>No history found</h3>
-            <p>There are no records matching these filters.</p>
-        </div>
-        <div class="table-footer"><span>Showing 4 sample records</span>
-            <nav aria-label="History pagination">
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                    <li class="page-item active"><span class="page-link">1</span></li>
-                    <li class="page-item disabled"><span class="page-link">Next</span></li>
-                </ul>
-            </nav>
-        </div>
+                <% }) %>
+            </tbody>
+        </table>
     </div>
+
+    <div
+        class="empty-state <%= records.length === 0 ? '' : 'd-none' %>"
+        id="historyEmpty">
+
+        <div class="empty-state-icon">
+            <i class="bi bi-calendar2-x"></i>
+        </div>
+
+        <h3>No history found</h3>
+        <p>There are no records matching these filters.</p>
+    </div>
+
+    <div class="table-footer">
+        <span id="historyCount">
+            Showing <%= totalVisits %> records
+        </span>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('historySearch');
+        const statusFilter = document.getElementById('historyStatus');
+        const table = document.getElementById('historyTable');
+        const emptyState = document.getElementById('historyEmpty');
+        const countLabel = document.getElementById('historyCount');
+
+        if (!searchInput || !statusFilter || !table) return;
+
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+        function filterHistory() {
+            const searchValue = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusFilter.value;
+
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const rowStatus = row.dataset.status;
+                const searchText = row.dataset.search || '';
+
+                const matchesSearch = searchText.includes(searchValue);
+                const matchesStatus =
+                    selectedStatus === 'all' ||
+                    rowStatus === selectedStatus;
+
+                const visible = matchesSearch && matchesStatus;
+
+                row.style.display = visible ? '' : 'none';
+
+                if (visible) visibleCount++;
+            });
+
+            if (emptyState) {
+                emptyState.classList.toggle('d-none', visibleCount !== 0);
+            }
+
+            if (countLabel) {
+                countLabel.textContent =
+                    `Showing ${visibleCount} of ${rows.length} records`;
+            }
+        }
+
+        searchInput.addEventListener('input', filterHistory);
+        statusFilter.addEventListener('change', filterHistory);
+
+        filterHistory();
+    });
+</script>
