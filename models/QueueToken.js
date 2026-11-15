@@ -149,6 +149,20 @@ async function getQueueHistory(studentId) {
     return rows;
 }
 
+// Find a student's token using its token number
+async function getTokenByNumber(tokenNumber, studentId) {
+    const [rows] = await pool.query(
+        `SELECT id, token_number, status, joined_at, service_id
+         FROM queue_tokens
+         WHERE token_number = ?
+         AND student_id = ?
+         LIMIT 1`,
+        [tokenNumber, studentId]
+    );
+
+    return rows[0] || null;
+}
+
 // Get position of a particular token
 async function getQueuePosition(tokenId, studentId) {
     const [rows] = await pool.query(
@@ -229,5 +243,6 @@ module.exports = {
     getActiveQueues,
     getQueueHistory,
     getQueuePosition,
+    getTokenByNumber,
     cancelToken
 };

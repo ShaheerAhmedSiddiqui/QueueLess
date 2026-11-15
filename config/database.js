@@ -16,7 +16,7 @@ async function testConnection() {
   const connection = await pool.getConnection();
   try {
     await connection.ping();
-    console.log("Dataase Connected!!");
+    console.log('Database Connected!');
     return true;
   } finally {
     connection.release();

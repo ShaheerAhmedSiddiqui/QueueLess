@@ -9,6 +9,8 @@ const pageRoutes = require("./routes/pageRoutes");
 const studentRoutes = require("./routes/studentRoutes")
 const viewLocals = require('./config/viewLocals');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const authRoutes = require('./routes/authRoutes');
+const { testConnection } = require('./config/database');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -44,16 +46,35 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 4
   }
 }));
-app.use(viewLocals);
-app.use('/', pageRoutes);
-app.use('/student', studentRoutes);
 
-app.get('/health', (req, res) => res.json({ status: 'ok', app: 'QueueLess' }));
+
+app.use(viewLocals);
+
+app.use('/', pageRoutes);
+app.use('/', authRoutes);
+app.use('/student', studentRoutes);
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', app: 'QueueLess' });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`QueueLess is running at http://localhost:${PORT}`));
+  async function startServer() {
+    try {
+      await testConnection();
+
+      app.listen(PORT, () => {
+        console.log(`QueueLess is running at http://localhost:${PORT}`);
+      });
+    } catch (error) {
+      console.error('Database connection failed:', error.message);
+      process.exit(1);
+    }
+  }
+
+  startServer();
 }
 
 module.exports = app;
